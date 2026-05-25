@@ -2,10 +2,10 @@
 build/
 
 # External cloned layers/repos
-bitbake/
-openembedded-core/
-meta-openembedded/
-meta-virtualization/
+sources/
 
 # Local cache mount
 yocto-cache/
+
+# Logs
+*.log

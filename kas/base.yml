@@ -1,76 +1,27 @@
-# kas schema/config version.
-# Defines how kas interprets and validates this file.
 header:
   version: 14
 
-# Target machine configuration.
-#
-# qemuarm64 builds an ARM64 image suitable for QEMU virtualization.
-#
-# Determines:
-# - architecture
-# - kernel tuning
-# - machine-specific metadata
 machine: qemuarm64
-
-# Distro configuration name.
-#
-# Maps to:
-# meta-company/conf/distro/companydistro.conf
-#
-# Defines OS-wide policy such as:
-# - init system
-# - package manager
-# - distro features
-# - runtime defaults
 distro: companydistro
 
 repos:
-
-  # BitBake build engine repository.
-  #
-  # BitBake is NOT a Yocto layer.
-  #
-  # It provides:
-  # - task execution
-  # - dependency graph resolution
-  # - recipe parsing
-  # - build orchestration
   bitbake:
     url: "https://git.openembedded.org/bitbake"
     branch: "2.8"
-    # Explicitly indicates this repository contains no layers.
-    #
-    # Prevents kas from incorrectly injecting the BitBake repo
-    # into BBLAYERS.
+    path: "sources/bitbake"
     layers: {}
 
-  # OpenEmbedded-Core repository.
-  #
-  # Provides the actual Linux distribution metadata:
-  # - recipes
-  # - image generation
-  # - compiler/toolchain infrastructure
-  # - packaging logic
-  # - rootfs generation
-  # - system integration
   openembedded-core:
     url: "https://git.openembedded.org/openembedded-core"
     branch: "scarthgap"
+    path: "sources/openembedded-core"
     layers:
-      # Core OpenEmbedded metadata layer.
-      #
-      # Required for:
-      # - images
-      # - packages
-      # - build classes
-      # - toolchains
       meta:
 
-  # dependency for meta-virtualization
   meta-openembedded:
     url: "https://git.openembedded.org/meta-openembedded"
     branch: "scarthgap"
+    path: "sources/meta-openembedded"
     layers:
       meta-oe:
       meta-python:
@@ -80,82 +31,21 @@ repos:
   meta-virtualization:
     url: "https://git.yoctoproject.org/meta-virtualization"
     branch: "scarthgap"
+    path: "sources/meta-virtualization"
     layers:
       .:
 
-  # Custom company/product layer.
-  #
-  # Intended for:
-  # - distro config
-  # - custom recipes
-  # - services
-  # - platform policies
-  # - future product customization
   meta-company:
+    path: "/yocto-workspace/meta-company"
 
-    # Local layer path inside the container.
-    path: "/workspace/meta-company"
-
-# BitBake build targets.
-#
-# core-image-minimal is the smallest standard OE-Core image
-# and serves as a clean starting point for platform development.
-# target:
-#   - core-image-minimal
 target:
   - company-image
 
-# local_conf_header injects content directly into generated local.conf.
-#
-# DL_DIR
-#   Persistent source download cache.
-#   Prevents re-downloading upstream sources every build.
-#
-# SSTATE_DIR
-#   Shared state cache for compiled/intermediate artifacts.
-#   Critical for fast incremental rebuilds.
-#
-# BB_NUMBER_THREADS
-#   Maximum simultaneous BitBake tasks.
-#   Controls scheduler-level parallelism.
-#
-# PARALLEL_MAKE
-#   Internal compiler parallelism passed to make.
-#   Equivalent to make -jN.
-#
-# PACKAGE_CLASSES
-#   Package backend format selection.
-#   IPK is lightweight and common in embedded systems.
-#
-# INIT_MANAGER
-#   Selects systemd as the init/service manager.
-#
-# DISTRO_FEATURES
-#   Global distro capability flags.
-#   Enables systemd integration across recipes.
-#
-# VIRTUAL-RUNTIME_init_manager
-#   Runtime provider for /sbin/init.
-#
-# EXTRA_IMAGE_FEATURES
-#   Additional development/debug image features.
-#   Empty keeps the image minimal and production-oriented.
-#
-# USER_CLASSES
-#   Enables build statistics collection.
-#
-# PATCHRESOLVE
-#   Prevents interactive patch resolution prompts.
-#   Important for automation and CI safety.
-#
-# INHERIT += "rm_work"
-#   Removes temporary work directories after packaging.
-#   Greatly reduces disk usage during builds.
 local_conf_header:
 
   cache: |
-    DL_DIR = "/cache/downloads"
-    SSTATE_DIR = "/cache/sstate"
+    DL_DIR = "/yocto-cache/downloads"
+    SSTATE_DIR = "/yocto-cache/sstate"
 
   performance: |
     BB_NUMBER_THREADS = "8"
