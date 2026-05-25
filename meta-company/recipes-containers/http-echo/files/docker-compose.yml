@@ -1,0 +1,11 @@
+services:
+  http-echo:
+    image: hashicorp/http-echo:latest
+
+    command:
+      - "-text=hello from yocto"
+
+    ports:
+      - "5678:5678"
+
+    restart: unless-stopped

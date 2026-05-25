@@ -1,0 +1,11 @@
+# Yocto build output
+build/
+
+# External cloned layers/repos
+bitbake/
+openembedded-core/
+meta-openembedded/
+meta-virtualization/
+
+# Local cache mount
+yocto-cache/
