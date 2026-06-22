@@ -44,27 +44,41 @@ init-cache:
 # Boot latest built image using QEMU.
 qemu:
 	$(DOCKER_RUN) shell kas/base.yml -c "\
-		runqemu qemuarm64 nographic slirp \
+		runqemu company-qemuarm64 company-image wic nographic slirp \
 	"
 
-# Boot latest built WIC disk image using QEMU.
+# Boot latest built WIC disk image using QEMU + U-Boot.
 qemu-wic:
-	$(DOCKER_RUN) shell kas/base.yml -c '\
-				set -eu; \
-				deploy="build/tmp-glibc/deploy/images/qemuarm64"; \
-				wic=$$(ls -t "$$deploy"/company-image-qemuarm64.rootfs*.wic 2>/dev/null | head -n1 || true); \
-				if [ -z "$$wic" ]; then \
-						echo "No .wic image found in $$deploy"; \
-						echo "Build WIC output first, e.g. enable IMAGE_FSTYPES += \"wic\" and run make build"; \
-						exit 1; \
-				fi; \
-				echo "Booting $$wic"; \
-				runqemu "$$wic" nographic slirp serialstdio \
-	'
+		$(DOCKER_RUN) shell kas/base.yml -c '\
+					set -eu; \
+					deploy="$${BUILDDIR}/tmp-glibc/deploy/images/company-qemuarm64"; \
+					wic=$$(ls -t "$$deploy"/company-image-company-qemuarm64.rootfs*.wic 2>/dev/null | head -n1 || true); \
+					qemuboot="$$deploy/company-image-company-qemuarm64.rootfs.qemuboot.conf"; \
+					uboot="$$deploy/u-boot.bin"; \
+					echo "Deploy dir: $$deploy"; \
+					echo "WIC image:  $$wic"; \
+					echo "QEMU boot:  $$qemuboot"; \
+					echo "U-Boot:     $$uboot"; \
+					if [ -z "$$wic" ]; then \
+							echo "No .wic image found in $$deploy"; \
+							echo "Run make build first"; \
+							exit 1; \
+					fi; \
+					if [ ! -f "$$qemuboot" ]; then \
+							echo "No qemuboot config found at $$qemuboot"; \
+							exit 1; \
+					fi; \
+					if [ ! -f "$$uboot" ]; then \
+							echo "No U-Boot binary found at $$uboot"; \
+							echo "Make sure WKS_FILE_DEPENDS includes u-boot"; \
+							exit 1; \
+					fi; \
+					runqemu company-qemuarm64 company-image wic nographic slirp serialstdio qemuparams="-bios $$uboot" \
+		'
 
 # Remove QEMU tmp/runtime state.
 qemu-clean:
-	rm -rf build/tmp/deploy/images/qemuarm64/*.qemuboot.*.pid
+	rm -rf build/tmp-glibc/deploy/images/company-qemuarm64/*.qemuboot.*.pid
 
 # Show available targets.
 help:

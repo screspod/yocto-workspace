@@ -9,3 +9,7 @@ yocto-cache/
 
 # Logs
 *.log
+
+# AI generated files
+.agents/
+.codex/

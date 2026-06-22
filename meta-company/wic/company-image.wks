@@ -1,0 +1,21 @@
+# Boot partition A
+part /boot --source bootimg-partition --ondisk sda --fstype=vfat --label bootA --align 4096 --size 128 --active --use-uuid
+
+# Boot partition B
+part --source bootimg-partition --ondisk sda --fstype=vfat --label bootB --align 4096 --size 128 --use-uuid
+
+# Root filesystem A
+part / --source rootfs --ondisk sda --fstype=ext4 --label rootfsA --align 4096 --size 768 --use-uuid
+
+# Root filesystem B
+part --ondisk sda --fstype=ext4 --label rootfsB --align 4096 --size 768 --use-uuid
+
+# Persistent application/device data
+part /data --ondisk sda --fstype=ext4 --label data --align 4096 --size 512 --use-uuid
+
+# RAUC state/status storage
+part /var/lib/rauc --ondisk sda --fstype=ext4 --label rauc-state --align 4096 --size 64 --use-uuid
+
+# QEMU uses virtio, so Linux sees the disk as /dev/vda.
+# Active slot starts as A: bootA + rootfsA.
+bootloader --ptable gpt --append="root=/dev/vda3 rootwait rootfstype=ext4 console=ttyAMA0,115200"

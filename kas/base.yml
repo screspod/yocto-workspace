@@ -1,7 +1,7 @@
 header:
   version: 14
 
-machine: qemuarm64
+machine: company-qemuarm64
 distro: companydistro
 
 repos:
