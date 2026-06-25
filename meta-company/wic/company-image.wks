@@ -1,8 +1,8 @@
 # Boot partition A
-part /boot --source bootimg-partition --ondisk sda --fstype=vfat --label bootA --align 4096 --size 128 --active --use-uuid
+part /boot --source bootimg-partition --ondisk sda --fstype=vfat --label bootA --align 4096 --size 128 --active --use-uuid --part-type=EF00
 
 # Boot partition B
-part --source bootimg-partition --ondisk sda --fstype=vfat --label bootB --align 4096 --size 128 --use-uuid
+part --source bootimg-partition --ondisk sda --fstype=vfat --label bootB --align 4096 --size 128 --use-uuid --part-type=EF00
 
 # Root filesystem A
 part / --source rootfs --ondisk sda --fstype=ext4 --label rootfsA --align 4096 --size 768 --use-uuid

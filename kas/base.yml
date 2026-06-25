@@ -42,14 +42,11 @@ target:
   - company-image
 
 local_conf_header:
-
   cache: |
-    DL_DIR = "/yocto-cache/downloads"
-    SSTATE_DIR = "/yocto-cache/sstate"
-
-  performance: |
-    BB_NUMBER_THREADS = "8"
-    PARALLEL_MAKE = "-j8"
+    DL_DIR = "/yocto-downloads"
+    SSTATE_DIR = "/yocto-sstate"
+    # Separate volume so tmp can be wiped independently of sources and sstate cache
+    TMPDIR = "/yocto-tmp/tmp"
 
   distro: |
     PACKAGE_CLASSES = "package_ipk"

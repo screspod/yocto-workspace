@@ -1,5 +1,9 @@
 # Yocto build output
 build/
+deploy/
+
+# Yocto cache
+cache/
 
 # External cloned layers/repos
 sources/
@@ -10,6 +14,4 @@ yocto-cache/
 # Logs
 *.log
 
-# AI generated files
-.agents/
-.codex/
+.claude/

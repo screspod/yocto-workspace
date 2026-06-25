@@ -1,6 +1,6 @@
 echo "Starting Company A/B boot"
 
-setenv BOOT_ORDER "B A"
+setenv BOOT_ORDER "A B"
 
 virtio scan
 
